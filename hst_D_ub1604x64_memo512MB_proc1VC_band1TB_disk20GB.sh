@@ -3,7 +3,7 @@
 #   Katabasis is licensed under the GNU General Public License, version 2.0.   #
 #                                                                              #
 ################################################################################
-
+                        Version for my personal use
 ################################################################################
 #                                                                              #
 # *++*+++***+**++*+++*|%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%|*+++*++**+***+++*++* #
@@ -48,7 +48,7 @@ yes
 
 sh -c 'echo "set const" >> .nanorc'
 
-sh -c 'echo "set tabsize 8" >> .nanorc'
+sh -c 'echo "set tabsize 4" >> .nanorc'
 
 sh -c 'echo "set tabstospaces" >> .nanorc'
 
@@ -58,7 +58,7 @@ usermod -aG sudo <os_username>
 
 cp .nanorc /home/<os_username>/
 
-mkdir /etc/ssh/<os_username>
+mkdir /home/<os_username>/.ssh/
 
 exit
 
@@ -68,7 +68,7 @@ exit
 # ::| !_______! |::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
 # ::!/         \!::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
 
-scp .ssh/id_rsa.pub root@<vps_ip_addr>:/etc/ssh/<os_username>/authorized_keys
+scp ~/.ssh/id_rsa.pub root@<vps_ip_addr>:/home/<os_username>/.ssh/authorized_keys
 
 scp .credentials root@<vps_ip_addr>:/home/<os_username>/
 
@@ -80,13 +80,13 @@ ssh root@<vps_ip_addr>
 # ::| !________! |:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
 # ::!/          \!:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
 
-chown -R <os_username>:<os_username> /etc/ssh/<os_username>
+chown -R <os_username>:<os_username> /home/<os_username>
 
-chmod 755 /etc/ssh/<os_username>
+chmod 755 /home/<os_username>/.ssh
 
-chmod 644 /etc/ssh/<os_username>/authorized_keys
+chmod 644 /home/<os_username>/.ssh/authorized_keys
 
-sed -i -e '/^#AuthorizedKeysFile/s/^.*$/AuthorizedKeysFile \/etc\/ssh\/<os_username>\/authorized_keys/' /etc/ssh/sshd_config
+sed -i -e '/^#AuthorizedKeysFile/s/^.*$/AuthorizedKeysFile \/home\/<os_username>\/.ssh\/authorized_keys/' /etc/ssh/sshd_config
 
 sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin no/' /etc/ssh/sshd_config
 
@@ -96,7 +96,7 @@ sh -c 'echo "" >> /etc/ssh/sshd_config'
 
 sh -c 'echo "" >> /etc/ssh/sshd_config'
 
-sh -c 'echo "# Added by Katabasis build process" >> /etc/ssh/sshd_config'
+sh -c 'echo "# Added by my personal version of the Katabasis build process" >> /etc/ssh/sshd_config'
 
 sh -c 'echo "AllowUsers <os_username>" >> /etc/ssh/sshd_config'
 
@@ -113,6 +113,8 @@ systemctl enable firewalld
 sed -i -e '/^Port/s/^.*$/Port <defined_ssh_port>/' /etc/ssh/sshd_config
 
 firewall-cmd --add-port <defined_ssh_port>/tcp --permanent
+
+firewall-cmd --add-port <defined_http_port>/tcp --permanent
 
 firewall-cmd --reload
 
